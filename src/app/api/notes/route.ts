@@ -39,7 +39,7 @@ export async function POST(req: Request) {
         { id: note.id, values: embedding, metadata: { userId } },
       ]);
 
-      return note
+      return note;
     });
 
     return Response.json({ note }, { status: 201 });
@@ -48,7 +48,6 @@ export async function POST(req: Request) {
     return Response.json({ error: "Internal server error" }, { status: 500 });
   }
 }
-
 export async function PUT(req: Request) {
   try {
     const body = await req.json();
@@ -73,13 +72,26 @@ export async function PUT(req: Request) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
     const embedding = await getEmbeddingFromNote(title, content);
-    const updatedNote = await prisma.notes.update({
-      where: { id },
-      data: {
-        title,
-        content,
-      },
+
+    const updatedNote = await prisma.$transaction(async (tx) => {
+      const updatedNote = await tx.notes.update({
+        where: { id },
+        data: {
+          title,
+          content,
+        },
+      });
+      await notesIndex.upsert([
+        {
+          id,
+          values: embedding,
+          metadata: { userId },
+        },
+      ]);
+
+      return updatedNote;
     });
+
     return Response.json({ updatedNote }, { status: 200 });
   } catch (error) {
     console.error(error);
@@ -109,8 +121,11 @@ export async function DELETE(req: Request) {
     if (!userId || userId !== note.userId) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
-
-    await prisma.notes.delete({ where: { id } });
+    await prisma.$transaction(async (tx)=>{
+        await tx.notes.delete({ where: { id } });
+        await notesIndex.deleteOne(id)
+        })
+   
     return Response.json({ message: "Note deleted" }, { status: 200 });
   } catch (error) {
     console.error(error);
