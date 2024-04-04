@@ -11,6 +11,7 @@ import AddEditNoteDialog from "@/components/AddEditNoteDialog";
 import ThemeToggleButton from "@/components/ThemeToggleButton";
 import { useTheme } from "next-themes";
 import {dark} from "@clerk/themes"
+import ChatButton from "@/components/ChatButton";
 
 
 export default function NavBar() {
@@ -34,6 +35,7 @@ export default function NavBar() {
                 <Plus size={20} className="mr-2"/>
                 Add Note
             </Button>
+            <ChatButton/>
         </div>
       </div>
     </div>
