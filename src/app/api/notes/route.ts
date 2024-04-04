@@ -1,3 +1,4 @@
+import { getEmbedding, notesIndex } from "@/lib/db/pinecone";
 import prisma from "@/lib/db/prisma";
 import {
   createNoteSchema,
@@ -24,13 +25,21 @@ export async function POST(req: Request) {
     if (!userId) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
+    const embedding = await getEmbeddingFromNote(title, content);
 
-    const note = await prisma.notes.create({
-      data: {
-        title,
-        content,
-        userId,
-      },
+    const note = await prisma.$transaction(async (tx) => {
+      const note = await tx.notes.create({
+        data: {
+          title,
+          content,
+          userId,
+        },
+      });
+      await notesIndex.upsert([
+        { id: note.id, values: embedding, metadata: { userId } },
+      ]);
+
+      return note
     });
 
     return Response.json({ note }, { status: 201 });
@@ -63,7 +72,7 @@ export async function PUT(req: Request) {
     if (!userId || userId !== note.userId) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
-
+    const embedding = await getEmbeddingFromNote(title, content);
     const updatedNote = await prisma.notes.update({
       where: { id },
       data: {
@@ -107,4 +116,11 @@ export async function DELETE(req: Request) {
     console.error(error);
     return Response.json({ error: "Internal server error" }, { status: 500 });
   }
+}
+
+async function getEmbeddingFromNote(
+  title: string,
+  content: string | undefined,
+) {
+  return getEmbedding(title + "\n\n" + content ?? "");
 }
