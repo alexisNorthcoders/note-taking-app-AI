@@ -8,7 +8,7 @@ import { ThemeProvider } from "./ThemeProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Chat AI",
+  title: "Notes AI",
   description: "Nextjs Chat App",
 };
 

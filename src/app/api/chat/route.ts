@@ -34,12 +34,11 @@ export async function POST(req: Request) {
         },
       },
     });
-    console.log("Relevant notes found in MongoDB: ", relevantNotes);
-
+    
     const systemMessage: ChatCompletionSystemMessageParam = {
       role: "system",
       content:
-        "You are an intelligent note-taking app. You answer the user's question base on their existing notes." +
+        "You are an intelligent note-taking app. You answer the user's question based on their existing notes." +
         "The relevant notes for this question are:\n" +
         relevantNotes
           .map((note) => `Title: ${note.title}\n\nContent:\n${note.content}`)

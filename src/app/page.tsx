@@ -15,10 +15,20 @@ export default function Home() {
     <main className="flex flex-col h-screen items-center justify-center gap-5">
      <div className="flex items-center gap-4">
     <Image src={logo} alt="chat logo" width={100} height={100}/>
-    <span className="font-extrabold tracking-tight text-4xl lg:text-5xl">Chat AI</span>
+    <span className="font-extrabold tracking-tight text-4xl lg:text-5xl">Notes with AI</span>
      </div>
      <p className="text-center max-w-prose">
-      Chat AI Assistant built in Next.js, with TailwindCSS, TypeScript, Zod, OpenAI, Pinecone, Shadcn UI, Clerk and MongoDB 
+      Note App using AI to read and interpret the notes. Built using:
+      <ul className="font-bold text-xl">
+        <li>Next.js</li>
+        <li>TailwindCSS</li>
+        <li>TypeScript</li>
+        <li>MongoDB</li>
+        <li>Clerk</li>
+        <li>Shadcn UI</li>
+        <li>Pinecone</li>
+        <li>OpenAI</li>
+        </ul> 
      </p>
      <Button size="lg" asChild>
       <Link href="/notes">Open</Link>

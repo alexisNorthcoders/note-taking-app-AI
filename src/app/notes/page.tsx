@@ -4,7 +4,7 @@ import { auth } from "@clerk/nextjs"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
-    title: "Chat AI - Your Notes"
+    title: "Notes AI"
 }
 
 export default async function NotesPage(){
