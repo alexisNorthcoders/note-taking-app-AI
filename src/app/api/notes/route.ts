@@ -36,3 +36,12 @@ export async function POST(req:Request){
         return Response.json({error:"Internal server error"},{status:500})
     }
 }
+
+export async function PUT(req:Request){
+    try {
+        const body= await req.json()
+    } catch (error) {
+        console.error(error)
+        return Response.json({error:"Internal server error"},{status:500})
+    }
+}
