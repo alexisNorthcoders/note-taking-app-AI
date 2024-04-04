@@ -1,12 +1,12 @@
 import { cn } from "@/lib/utils";
 import { useChat } from "ai/react";
-import { Bot, SendHorizontal, XCircle } from "lucide-react";
+import { Bot, SendHorizontal, XCircle, Trash } from "lucide-react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Message } from "ai";
 import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 interface ChatBoxProps {
   open: boolean;
@@ -24,9 +24,22 @@ export default function ChatBox({ open, onClose }: ChatBoxProps) {
     error,
   } = useChat();
 
-  const inputRef = useRef<HTMLInputElement>(null)
-  const scrollRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    if (open) {
+      inputRef.current?.focus();
+    }
+  }, [open]);
+
+  const lastMessageIsUser = messages[messages.length - 1]?.role === "user";
   return (
     <div
       className={cn(
@@ -38,23 +51,55 @@ export default function ChatBox({ open, onClose }: ChatBoxProps) {
         <XCircle size={30} />
       </button>
       <div className="flex h-[600px] flex-col rounded border bg-background shadow-xl">
-        <div className="h-full mt-3 px-3 overflow-y-auto">
+        <div className="mt-3 h-full overflow-y-auto px-3" ref={scrollRef}>
           {messages.map((message) => (
             <ChatMessage message={message} key={message.id} />
           ))}
+          {isLoading && lastMessageIsUser && (
+            <ChatMessage
+              message={{
+                role: "assistant",
+                content: "Generating response...",
+              }}
+            />
+          )}
+          {error && (
+            <ChatMessage
+              message={{
+                role: "assistant",
+                content: "Oops, something is wrong. Try again.",
+              }}
+              
+            />
+          )}
+          {!error && messages.length === 0 && (
+            <div className="flex h-full items-center justify-center gap-3">
+              <Bot/>Ask me a question about your notes!
+            </div>
+          )}
         </div>
         <form onSubmit={handleSubmit} className="m-3 flex gap-1">
+          <Button
+            title="Clear chat"
+            variant="outline"
+            size="icon"
+            type="button"
+            className="shrink-0"
+            onClick={() => setMessages([])}
+          >
+            <Trash />
+          </Button>
           <Input
             value={input}
             onChange={handleInputChange}
             placeholder="Write your prompt..."
+            ref={inputRef}
           />
           <button
             type="submit"
-            className=" rounded border"
+            className=" rounded border "
             aria-label="send prompt"
           >
-            {" "}
             <SendHorizontal size={30} />
           </button>
         </form>
@@ -63,11 +108,15 @@ export default function ChatBox({ open, onClose }: ChatBoxProps) {
   );
 }
 
-function ChatMessage({ message: { role, content } }: { message: Message }) {
+function ChatMessage({
+  message: { role, content },
+}: {
+  message: Pick<Message, "role" | "content">;
+}) {
   const { user } = useUser();
 
   const isAiMessage = role === "assistant";
-  console.log(role);
+  
   return (
     <div
       className={cn(

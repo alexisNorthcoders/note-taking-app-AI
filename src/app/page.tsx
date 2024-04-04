@@ -18,7 +18,7 @@ export default function Home() {
     <span className="font-extrabold tracking-tight text-4xl lg:text-5xl">Chat AI</span>
      </div>
      <p className="text-center max-w-prose">
-      Chat AI Assistant built in Next.js, with TailwindCSS, TypeScript, Zod, OpenAI, Pinecone, Shadcn UI, Clerk, MongoDB and Langchain 
+      Chat AI Assistant built in Next.js, with TailwindCSS, TypeScript, Zod, OpenAI, Pinecone, Shadcn UI, Clerk and MongoDB 
      </p>
      <Button size="lg" asChild>
       <Link href="/notes">Open</Link>
