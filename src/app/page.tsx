@@ -29,7 +29,7 @@ export default function Home() {
         </ul> 
      </span>
      <Button size="lg" asChild>
-      <Link href="/notes">Open</Link>
+      <Link href="/sign-in">Open</Link>
       </Button>
     </main>
   );
