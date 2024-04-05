@@ -2,6 +2,7 @@ import prisma from "@/lib/db/prisma";
 
 export async function GET(req: Request, { params }: any) {
   const userId = params.userId;
+  console.log(userId, "in prisma route")
 
   try {
     const allNotes = await prisma.notes.findMany({ where: { userId } });
