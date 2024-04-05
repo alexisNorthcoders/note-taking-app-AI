@@ -1,14 +1,18 @@
 import { getEmbedding, notesIndex } from "@/lib/db/pinecone";
 import prisma from "@/lib/db/prisma";
 import openai from "@/lib/openai";
-import { auth } from "@clerk/nextjs";
 import { OpenAIStream, StreamingTextResponse } from "ai";
 import {
   ChatCompletionMessage,
   ChatCompletionSystemMessageParam,
 } from "openai/resources/index.mjs";
+import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
+  const parsedCookie = cookies().get("userId");
+  const cookieValue = parsedCookie?.value || null;
+  const parsedCookieValue = cookieValue ? JSON.parse(cookieValue) : {};
+  const userId = parsedCookieValue.userId;
   try {
     const body = await req.json();
     const messages: ChatCompletionMessage[] = body.messages;
@@ -19,8 +23,7 @@ export async function POST(req: Request) {
       messagesSliced.map((message) => message.content).join("\n"),
     );
 
-    const { userId } = auth();
-
+  
     const vectorQueryResponse = await notesIndex.query({
       vector: embedding,
       topK: 4,

@@ -4,9 +4,9 @@ import { Bot, SendHorizontal, XCircle, Trash } from "lucide-react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Message } from "ai";
-import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import { useEffect, useRef } from "react";
+import { setCookie, parseCookies } from "nookies";
 
 interface ChatBoxProps {
   open: boolean;
@@ -69,12 +69,12 @@ export default function ChatBox({ open, onClose }: ChatBoxProps) {
                 role: "assistant",
                 content: "Oops, something is wrong. Try again.",
               }}
-              
             />
           )}
           {!error && messages.length === 0 && (
             <div className="flex h-full items-center justify-center gap-3">
-              <Bot/>Ask me a question about your notes!
+              <Bot />
+              Ask me a question about your notes!
             </div>
           )}
         </div>
@@ -113,10 +113,10 @@ function ChatMessage({
 }: {
   message: Pick<Message, "role" | "content">;
 }) {
-  const { user } = useUser();
-
   const isAiMessage = role === "assistant";
-  
+  const parsedCookie = parseCookies();
+  const user = JSON.parse(parsedCookie.userId);
+
   return (
     <div
       className={cn(

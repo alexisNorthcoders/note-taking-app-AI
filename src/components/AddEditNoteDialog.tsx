@@ -49,6 +49,7 @@ export default function AddEditNoteDialog({
       if (noteToEdit) {
         const response = await fetch("/api/notes", {
           method: "PUT",
+          
           body: JSON.stringify({
             id: noteToEdit.id,
             ...input,
@@ -65,7 +66,7 @@ export default function AddEditNoteDialog({
         form.reset();
       }
 
-      router.refresh();
+      location.reload()
       setOpen(false);
     } catch (error) {
       console.error(error);

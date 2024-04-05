@@ -9,8 +9,8 @@ export default function ChatButton(){
     return(
         <>
         <Button onClick={() => setChatBoxOpen(true)}>
-            <Bot size={20} className="mr-2"/>
-            AI Chat
+            <Bot size={20} className="mr-1"/>
+            Chat
         </Button>
         <ChatBox open={chatBoxOpen} onClose={() => setChatBoxOpen(false)}/></>
     )

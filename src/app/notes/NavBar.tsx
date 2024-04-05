@@ -3,20 +3,19 @@
 import Link from "next/link";
 import logo from "@/assets/logo.png";
 import Image from "next/image";
-import { UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import AddEditNoteDialog from "@/components/AddEditNoteDialog";
 import ThemeToggleButton from "@/components/ThemeToggleButton";
-import { useTheme } from "next-themes";
-import {dark} from "@clerk/themes"
+
 import ChatButton from "@/components/ChatButton";
+import ChangeUserButton from "@/components/ChangeUserButton";
 
 
 export default function NavBar() {
-  const {theme} = useTheme()
 
+  
     const [showAddEditNoteDialog,setShowAddEditNoteDialog] = useState(false)
   return (
     <>
@@ -26,14 +25,13 @@ export default function NavBar() {
           <Image src={logo} alt="chat logo" width={40} height={40} />
           <span className="font-bold">Notes AI</span>
         </Link>
-        <div className="flex items-center gap-2">
-            <UserButton afterSignOutUrl="/" appearance={{
-              baseTheme: theme === "dark" ? dark : undefined,
-              elements:{avatarBox:{width:"2.5rem",height:"2.5rem"}}}}/>
-            <ThemeToggleButton/>
+        <div className="flex items-center gap-2 flex-wrap">
+        <ThemeToggleButton/>
+           <ChangeUserButton/>
+          
             <Button onClick={() => setShowAddEditNoteDialog(true)}>
-                <Plus size={20} className="mr-2"/>
-                Add Note
+                <Plus size={15} className="mr-2"/>
+                Note
             </Button>
             <ChatButton/>
         </div>
