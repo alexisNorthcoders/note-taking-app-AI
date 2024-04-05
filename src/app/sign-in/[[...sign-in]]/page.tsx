@@ -49,6 +49,7 @@ const SignInPage: React.FC = () => {
             maxAge: 30 * 24 * 60 * 60,
             path: '/',
           });
+          router.refresh()
           router.push('/notes'); 
             
             
